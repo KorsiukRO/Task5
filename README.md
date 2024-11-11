@@ -31,5 +31,5 @@
     - Запуск гонки з наявними автомобілями (необхідні адмін права)
     - Отримання результату заїзду після завершення симуляції (необхідні адмін права)
       
-P.S. Колекція Postman: [Uploading F1.postman_collection.json…]()
+P.S. Колекція Postman: [[Uploading F1.postman_collection.json…]()](https://github.com/KorsiukRO/Task5/blob/main/F1.postman_collection.json)
 
