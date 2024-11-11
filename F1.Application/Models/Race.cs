@@ -11,6 +11,14 @@ public partial class Race
     
     public required int PassabilityRace { get; init; }
     
+    public required string Location { get; init; }
+    
+    public required DateTime DateEvent { get; init; }
+    
+    public required int BasicPrice { get; init; }
+    
+    public required string SubscriptionType { get; init; }
+    
     private string GenerateSlug()
     {
         var sluggedNameRace =

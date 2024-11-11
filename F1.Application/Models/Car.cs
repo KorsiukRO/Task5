@@ -9,16 +9,12 @@ public partial class Car
     public string Slug => GenerateSlug();
 
     public required int Speed { get; set; }
-    
+
+
     public required int Passability { get; set; }
-    
     public required string Manufacturer { get; init; } 
     
     public required string Model { get; init; }  
-    
-    public bool IsSpeedTuned { get; set; }
-    
-    public bool IsPassabilityTuned { get; set; }
     
     private string GenerateSlug()
     {

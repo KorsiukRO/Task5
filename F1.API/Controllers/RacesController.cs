@@ -1,10 +1,12 @@
 using F1.Application.Services;
 using F1.Contracts.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Task5.Mapping;
 
 namespace Task5.Controllers;
 
+[Authorize]
 [ApiController]
 public class RacesController : ControllerBase
 {
@@ -17,6 +19,8 @@ public class RacesController : ControllerBase
         _carService = carService;
     }
     
+    
+    [Authorize(Policy = "AllInclusiveUser")]
     [HttpPost(ApiEndpoints.Races.Create)]
     public async Task<IActionResult> Create([FromBody] CreateRaceRequest request,
         CancellationToken token)
@@ -25,7 +29,9 @@ public class RacesController : ControllerBase
         await _raceService.CreateAsync(race, token);
         return CreatedAtAction(nameof(Get), new { idOrSlug = race.Id }, race);
     }
-
+    
+    
+    [Authorize(Policy = "FanOrVIPOrAllInclusiveUsers")]
     [HttpGet(ApiEndpoints.Races.Get)]
     public async Task<IActionResult> Get([FromRoute] string idOrSlug,
         CancellationToken token)
@@ -43,6 +49,18 @@ public class RacesController : ControllerBase
         return Ok(response);
     }
 
+    
+    [Authorize(Policy = "FanOrVIPOrAllInclusiveUsers")]
+    [HttpGet(ApiEndpoints.Races.GetByNameRace)] 
+    public async Task<IActionResult> GetByNameRace([FromBody]NameRaceRequest request, CancellationToken token)
+    {
+        var races = await _raceService.GetByNameAsync(request, token);
+        var racesResponse = races.MapToResponse();
+        return Ok(racesResponse);
+    }
+    
+    
+    [Authorize(Policy = "FanOrVIPOrAllInclusiveUsers")]
     [HttpGet(ApiEndpoints.Races.GetAll)]
     public async Task<IActionResult> GetAll(CancellationToken token)
     {
@@ -52,6 +70,28 @@ public class RacesController : ControllerBase
         return Ok(racesResponse);
     }
 
+
+    [Authorize(Policy = "FanOrVIPOrAllInclusiveUsers")]
+    [HttpGet(ApiEndpoints.Races.GetAllSortByDateEvent)]
+    public async Task<IActionResult> GetAllSortByDateEvent(CancellationToken token)
+    {
+        var races = await _raceService.GetAllSortByDateEvent(token);
+        var racesResponse = races.MapToResponse();
+        return Ok(racesResponse);
+    }
+
+
+    [Authorize(Policy = "FanOrVIPOrAllInclusiveUsers")]
+    [HttpGet(ApiEndpoints.Races.GetAllInRange)]
+    public async Task<IActionResult> GetAllInRange([FromBody]GetAllInRangeRequest request, CancellationToken token)
+    {
+        var races = await _raceService.GetAllInRangeAsync(request, token);
+        var racesResponse = races.MapToResponse();
+        return Ok(racesResponse);
+    }
+
+
+    [Authorize(Policy = "AllInclusiveUser")]
     [HttpPut(ApiEndpoints.Races.Update)]
     public async Task<IActionResult> Update([FromRoute]Guid id,
         [FromBody]UpdateRaceRequest request, CancellationToken token)
@@ -67,6 +107,8 @@ public class RacesController : ControllerBase
         return Ok(response);
     }
 
+    
+    [Authorize(Policy = "AllInclusiveUser")]
     [HttpDelete(ApiEndpoints.Races.Delete)]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
     {
@@ -79,8 +121,10 @@ public class RacesController : ControllerBase
         return Ok();
     }
 
+    
+    [Authorize(Policy = "AllInclusiveUser")]
     [HttpPost(ApiEndpoints.Races.Start)]
-    public async Task<IActionResult> StartRace([FromBody] StartRace request,
+    public async Task<IActionResult> StartRace([FromBody] NameRaceRequest request,
         CancellationToken token)
     {
         var getRace = await _raceService.GetByNameAsync(request, token);
